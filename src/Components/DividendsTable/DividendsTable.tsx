@@ -105,6 +105,14 @@ function getColumns(dividends: DividendRecord[]) {
       // @ts-ignore
       record[columnName].indexOf(value) === 0;
 
+    c.sorter = (a, b) => {
+      // @ts-ignore
+      const x = a[columnName];
+      // @ts-ignore
+      const y = b[columnName];
+      return x < y ? -1 : x > y ? 1 : 0;
+    };
+
     return c;
   });
 
