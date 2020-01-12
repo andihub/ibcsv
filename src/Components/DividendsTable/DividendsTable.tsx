@@ -5,15 +5,13 @@ import { DividendRecord } from "../Parser/parseDividendRecords";
 interface IDividendsTableProps {
   dividends?: DividendRecord[];
 }
-
+type DataSourceRecord = DividendRecord & {
+  key: any;
+};
 const DividendsTable: FunctionComponent<IDividendsTableProps> = ({
   dividends
 }) => {
-  const [dataSource, setDataSource] = useState<
-    (DividendRecord & {
-      key: any;
-    })[]
-  >([]);
+  const [dataSource, setDataSource] = useState<DataSourceRecord[]>([]);
 
   useEffect(() => {
     const ds = (dividends || [])
@@ -51,10 +49,24 @@ const DividendsTable: FunctionComponent<IDividendsTableProps> = ({
 
   columns[0].fixed = true;
 
+  const rowSelection = {
+    onChange: (
+      selectedRowKeys: number[] | string[],
+      selectedRows: DataSourceRecord[]
+    ) => {
+      // console.log(
+      //   `selectedRowKeys: ${selectedRowKeys}`,
+      //   "selectedRows: ",
+      //   selectedRows
+      // );
+    }
+  };
+
   return (
     <Table
       dataSource={dataSource}
       columns={columns}
+      rowSelection={rowSelection}
       scroll={{ x: "max-content" }}
       bordered
       size={"small"}
