@@ -68,22 +68,25 @@ function getColumns(dividends: DividendRecord[]) {
       } as ColumnProps<DataSourceRecord>)
   );
 
-  columns = columns.filter(o =>
-    [
-      "Symbol",
-      "Description",
-      "Date",
-      "ExDate",
-      "PayDate",
-      "Quantity",
-      "Tax",
-      "Fee",
-      "GrossRate",
-      "GrossAmount",
-      "NetAmount",
-      "Code"
-    ].includes(o.key as KeyColumnType)
-  );
+  if (true) {
+    columns = columns.filter(o =>
+      [
+        "Symbol",
+        "Description",
+        "ReportDate",
+        "Date",
+        "ExDate",
+        "PayDate",
+        "Quantity",
+        "Tax",
+        "Fee",
+        "GrossRate",
+        "GrossAmount",
+        "NetAmount",
+        "Code"
+      ].includes(o.key as KeyColumnType)
+    );
+  }
 
   const symbolColumn = columns[0];
   symbolColumn.fixed = true;

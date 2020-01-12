@@ -36,7 +36,6 @@ const App = () => {
   return (
     <Layout style={{ height: "100vh" }}>
       <Header style={{ position: "fixed", zIndex: 1, width: "100%" }}>
-        {/*  */}
         <div className="logo">
           <h1>ibcsv</h1>
         </div>
