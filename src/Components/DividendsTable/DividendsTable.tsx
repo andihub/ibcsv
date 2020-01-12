@@ -1,6 +1,7 @@
 import React, { useState, FunctionComponent, useEffect } from "react";
 import { Table } from "antd";
 import { DividendRecord } from "../Parser/parseDividendRecords";
+import { ColumnProps } from "antd/lib/table";
 
 interface IDividendsTableProps {
   dividends?: DividendRecord[];
@@ -23,31 +24,7 @@ const DividendsTable: FunctionComponent<IDividendsTableProps> = ({
     return <div>no dividends</div>;
   }
 
-  const c = Object.keys(dividends[0]).map((key: string) => ({
-    title: key,
-    dataIndex: key,
-    key: key,
-    fixed: false
-  }));
-
-  const columns = c.filter(o =>
-    [
-      "Symbol",
-      "Description",
-      "Date",
-      "ExDate",
-      "PayDate",
-      "Quantity",
-      "Tax",
-      "Fee",
-      "GrossRate",
-      "GrossAmount",
-      "NetAmount",
-      "Code"
-    ].includes(o.key)
-  );
-
-  columns[0].fixed = true;
+  const columns = getColumns(dividends);
 
   const rowSelection = {
     onChange: (
@@ -77,3 +54,65 @@ const DividendsTable: FunctionComponent<IDividendsTableProps> = ({
 };
 
 export default DividendsTable;
+
+type KeyColumnType = string;
+
+function getColumns(dividends: DividendRecord[]) {
+  let columns = Object.keys(dividends[0]).map(
+    (key: KeyColumnType) =>
+      ({
+        title: key,
+        dataIndex: key,
+        key: key,
+        fixed: false
+      } as ColumnProps<DataSourceRecord>)
+  );
+
+  columns = columns.filter(o =>
+    [
+      "Symbol",
+      "Description",
+      "Date",
+      "ExDate",
+      "PayDate",
+      "Quantity",
+      "Tax",
+      "Fee",
+      "GrossRate",
+      "GrossAmount",
+      "NetAmount",
+      "Code"
+    ].includes(o.key as KeyColumnType)
+  );
+
+  const symbolColumn = columns[0];
+  symbolColumn.fixed = true;
+
+  columns = columns.map(c => {
+    const columnName = c.key as string;
+
+    c.filters = Array.from(
+      new Set(
+        dividends.map(
+          d =>
+            // @ts-ignore
+            d[columnName]
+        )
+      )
+    ).map(s => ({ text: s, value: s }));
+
+    c.onFilter = (value, record) =>
+      // @ts-ignore
+      record[columnName].indexOf(value) === 0;
+
+    return c;
+  });
+
+  // symbolColumn.filters = Array.from(
+  //   new Set(dividends.map(d => d.Symbol))
+  // ).map(s => ({ text: s, value: s }));
+
+  // symbolColumn.onFilter = (value, record) => record.Symbol.indexOf(value) === 0;
+
+  return columns;
+}
